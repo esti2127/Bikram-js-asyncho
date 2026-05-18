@@ -1,4 +1,4 @@
-/**Parte 1---->conseguir las razas en un array */
+/**Ejercicio 1---->conseguir las razas en un array */
 
 const getAllBreeds = async () => {
   try {
@@ -31,10 +31,11 @@ getAllBreeds()
 
 
 
-/**Parte 2: conseguir una foto random de un perro */
+/**Ejercicio 2: conseguir una foto random de un perro */
 
 const getRandomDog = async () => {
   try {
+    /**Aquí la url cambia, y en lugar de buscar la lista con los perros, le pedimos a fetch que solicite una imagen random */
     const img = await fetch("https://dog.ceo/api/breeds/image/random");
     /**Se valida la respuesta */
     if (!img.ok) {
@@ -59,8 +60,13 @@ getRandomDog().then((respuesta2) => { console.log(respuesta2) }).catch((error2) 
 
 
 
+
+/**Ejercicio 3 */
+
+
 const getAllImagesByBreed = async () => {
   try {
+    /**Aqui ya conozco la raza que busco: pues la incluyo en la url (raza:komonodor, ¿qué busco?: imágenes) */
     const resp2 = await fetch("https://dog.ceo/api/breed/komondor/images");
     /**Se valida la respuesta */
     if (!resp2.ok) {
@@ -84,7 +90,7 @@ getAllImagesByBreed().then(respuesta3 => { console.log(respuesta3) }).catch((err
 /**Ejercicio 4: Devuelve las fotos del perro que el usuario quiere ver */
 
 
-
+/**Aquí ya es el usuario el que decide que perro quiere ver: pues que el perro que busca sea el argumento de búsqueda. */
 const getAllImagesByBreed2 = async (breed) => {
   try {
     /**la raza la da el usuario, así que en la url tiene que "entrar" la raza que la persona decida */
@@ -129,6 +135,8 @@ const getGitHubUserProfile = async (username) => {
   }
 }
 
+/**No me ha devuelto mi usuario, me ha devuelto al tal Alberto. Imagino que será predeterminado por Jasmine? */
+
 getGitHubUserProfile("esti2127").then(perfilUsuario => { console.log("Perfil de usuario:", perfilUsuario) }).catch((error4) => console.error(error4));
 
 
@@ -145,7 +153,7 @@ const printGithubUserProfile = async (username) => {
     const data5 = await resp5.json();
 
     const perfil = {
-      /**URL de la foto de perfil */
+      /**URL de la foto de perfil. Importante tener en cuenta que el nombre de la propiedad cambia según la API con la que se trabaje. */
       img: data5.avatar_url,
       /**nombre visible del usuario */
       name: data5.name,
@@ -186,8 +194,8 @@ const getAndPrintGitHubUserProfile = async(username) => {
 
     // Guardamos los datos que necesitamos de la API
     const img = data6.avatar_url;
-    /**Uso login porque la propiedad alt no existe en github */
-    const name = data6.name || data6.login; 
+    /**Uso login porque la propiedad alt no existe en github. El login es el nombre de usuario. Podría haber usado .name, pero el usuario podría no haberse registrado con su nombre real y entonces .nmae devolvería null de la api. En cambio, todos los usuarios tienen nombre de usuario. */
+    const name = data6.login; 
     const repos = data6.public_repos;
 
     // Se crea  y se devuelve el string HTML con la estructura pedida
@@ -220,6 +228,7 @@ document.body.append(botonBuscar);
 
 
 botonBuscar.addEventListener('click', () => {
+  /**con el .value leemos el texto escrito en la pantalla (en el inputTexto) y luego se guarda en la variable username */
     const username = inputTexto.value
     
     if (username !== "") {
@@ -228,6 +237,7 @@ botonBuscar.addEventListener('click', () => {
         
         // Para pintar la tarjeta en la web, se crea  un contenedor y se mete el string 
         let contenedorPerfil = document.getElementById('contenedorPerfil');
+        /**Esto de abajo lo usamos para limpiar el innerHTML, que sino se acomulan los contenedores.  */
         if (!contenedorPerfil) {
             contenedorPerfil = document.createElement('div');
             contenedorPerfil.id = 'contenedorPerfil';
@@ -254,7 +264,11 @@ botonBuscar.addEventListener('click', () => {
 async function fetchGithubUsers(userNames) {
 
   try{
+
+    /**Nos devolverá un array con prosesas pendientes que tendremos que resolver debajo */
     const promesas = userNames.map(name => fetch(`https://api.github.com/users/${name}`));
+
+    /**Aquí con el await nos aseguramos de que el código espere a que lleguen los usuarios de la API y luego los devuelve en un array */
 
     const respuestas = await Promise.all(promesas);
 
@@ -262,7 +276,7 @@ async function fetchGithubUsers(userNames) {
 
     datosUsuarios.forEach(user => {
       console.log(`URL del repositorio: ${user.html_url}`); 
-      console.log(`Nombre de usuario: ${user.name || user.login}`); 
+      console.log(`Nombre de usuario: ${user.login}`); 
     });
 
   }catch(error7){
